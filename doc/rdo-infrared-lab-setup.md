@@ -60,18 +60,26 @@ infrared virsh --host-address $YOURLABSERVER --host-key ~/.ssh/key_sbr_lab --cle
 We prepare the environment selecting what image to use, the cloud's topology and any further overrides.
 
 ```shell
-infrared virsh --host-address $YOURLABSERVER --host-key ~/.ssh/key_sbr_lab --topology-nodes undercloud:1,controller:3,compute:1 -e override.controller.cpu=8 -e override.controller.memory=15473 -e override.undercloud.disks.disk1.size=200G --image-url http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
+infrared virsh --host-address $YOURLABSERVER \
+  --host-key ~/.ssh/key_sbr_lab \
+  --topology-nodes undercloud:1,controller:3,compute:1 \
+  -e override.controller.cpu=8 \
+  -e override.controller.memory=12288 \
+  -e override.undercloud.disks.disk1.size=200G \
+  --image-url http://cloud.centos.org/centos/7/images/CentOS-7-x86_64-GenericCloud.qcow2
 ```
 
 4. Install the undercloud
 
 You have to set the container registry namespace to the version required, as default has now changed to rhosp14
 ```shell
-infrared tripleo-undercloud --version queens --images-task build
+infrared tripleo-undercloud --version queens \
+  --images-task build \
+  --ssl no
 ```
 
 Once this is deployed, depending on the size of you lab server (typical is 64Gb), I recommend to lower the worker counts to 1 to limit memory usage:
-https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh
+`https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh`
 
 We can also set checkpoints at different deployment stages, so if any issues arise we can later save some time and revert.
 
@@ -83,7 +91,17 @@ infrared tripleo-undercloud --snapshot-backup yes
 We start the overcloud deployment process with registering, introspecting and tagging the nodes :
 
 ```shell
-infrared tripleo-overcloud -o output.yaml --deployment-files virt --version queens --introspect yes --tagging yes --deploy no --containers yes --registry-mirror trunk.registry.rdoproject.org --registry-namespace master --registry-tag current-tripleo-rdo --registry-prefix=centos-binary- --registry-skip-puddle yes
+infrared tripleo-overcloud -o output.yaml \
+  --deployment-files virt \
+  --version queens \
+  --introspect yes \
+  --tagging yes \
+  --deploy no \
+  --containers yes \
+  --registry-mirror trunk.registry.rdoproject.org \
+  --registry-tag current-tripleo-rdo \
+  --registry-prefix=centos-binary- \
+  --registry-skip-puddle yes
 ```
 
 5. Deploying the overcloud
@@ -97,7 +115,6 @@ infrared tripleo-overcloud --deployment-files virt \
   --deploy yes \
   --containers yes \
   --registry-mirror trunk.registry.rdoproject.org \
-  --registry-namespace master \
   --registry-tag current-tripleo-rdo \
   --registry-prefix=centos-binary- \
   --registry-skip-puddle yes
