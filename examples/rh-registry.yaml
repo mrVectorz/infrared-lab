@@ -1,0 +1,8 @@
+extra_repos:
+  - name: rhel-7-server-openstack-13-optools-rpms
+    description: Red Hat OpenStack Platform 13 Operational Tools for RHEL 7 (RPMs)
+    file: rhos_repos
+    baseurl: https://cdn.redhat.com/content/dist/rhel/server/7/7Server/$basearch/openstack-optools/13/os
+    gpgcheck: no
+    enabled: yes
+    sslverify: no

@@ -1,4 +1,10 @@
-## infrared installation
+
+
+# RDO infrared installation
+
+Last test on version: 2.0.1.dev2750 (ansible-2.4.3.0, python-2.7.15)
+
+## initial setup
 
 On your workstation, install the required dependencies :
 
