@@ -1,5 +1,3 @@
-
-
 # RDO infrared installation
 
 Last test on version: 2.0.1.dev2750 (ansible-2.4.3.0, python-2.7.15)
@@ -84,8 +82,7 @@ infrared tripleo-undercloud --version queens \
   --ssl no
 ```
 
-Once this is deployed, depending on the size of you lab server (typical is 64Gb), I recommend to lower the worker counts to 1 to limit memory usage:
-`https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh`
+Once this is deployed, depending on the size of you lab server (typical is 64Gb), I recommend to lower the worker counts to 1 to limit memory usage. For the lazy, you can use [this script](https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh).
 
 We can also set checkpoints at different deployment stages, so if any issues arise we can later save some time and revert.
 
@@ -138,7 +135,7 @@ infrared cloud-config -vv \
 ## Additional Recommendations
 
 - Lowering the UC node's memory footprint
-Once the UC node deployed, depending on the size of you lab server (typical is 64Gb), it could be useful to lower the worker counts to 1 to limit memory usage. For the lazy, you can use (this script)[https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh].
+Once the UC node deployed, depending on the size of you lab server (typical is 64Gb), it could be useful to lower the worker counts to 1 to limit memory usage. For the lazy, you can use [this script](https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh).
 
 - Lowering the memory usage on the controllers
 Just as before, in a lab/PoC environment, operators do not need all the workers configured.
