@@ -138,9 +138,7 @@ infrared cloud-config -vv \
 ## Additional Recommendations
 
 - Lowering the UC node's memory footprint
-Once the UC node deployed, depending on the size of you lab server (typical is 64Gb), it could be useful to lower the worker counts to 1 to limit memory usage.
-Just run the bellow script as root:
-https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh
+Once the UC node deployed, depending on the size of you lab server (typical is 64Gb), it could be useful to lower the worker counts to 1 to limit memory usage. For the lazy, you can use (this script)[https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh].
 
 - Lowering the memory usage on the controllers
 Just as before, in a lab/PoC environment, operators do not need all the workers configured.
