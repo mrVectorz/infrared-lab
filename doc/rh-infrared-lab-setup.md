@@ -81,10 +81,6 @@ infrared tripleo-undercloud --version 13 \
   --build ga
 ```
 
-Once this is deployed, depending on the size of you lab server (typical is 64Gb), I recommend to lower the worker counts to 1 to limit memory usage. For the lazy, you can use [this script](https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh)
-
-We can also set checkpoints at different deployment stages, so if any issues arise we can later save some time and revert.
-
 If you want to use custom repositories (but cannot overlap with ones already managed by rhn if already subscribed), you will then use the `--repos-config` parameter. An example of such a template is included here: "./examples/rh-registry.yaml"
 IR uses the yum_repository module, for more information see the [upstream documentation](https://docs.ansible.com/ansible/latest/modules/yum_repository_module.html). Do note that IR does not make use of all parameters for some reason.
 
@@ -93,7 +89,7 @@ Backup the UC node :
 infrared tripleo-undercloud --snapshot-backup yes
 ```
 
-If we want to update and such the overcloud nodes, we will want them to be registered with the subscription manager. To do that we will add the following paramters (and template) for the IR command:
+If we want to update and such the overcloud nodes, we will want them to be registered with the subscription manager. To do that we will add the following parameters (and template) for the IR command:
 ```shell
   --config-heat rhel_reg_activation_key=EXAMPLE_KEY \
   --config-heat rhel_reg_org=EXAMPLE_ORG \
@@ -147,9 +143,7 @@ infrared cloud-config -vv \
 ## Additional Recommendations
 
 - Lowering the UC node's memory footprint
-Once the UC node deployed, depending on the size of you lab server (typical is 64Gb), it could be useful to lower the worker counts to 1 to limit memory usage.
-Just run the bellow script as root:
-https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh
+Once the UC node deployed, depending on the size of you lab server (typical is 64Gb), it could be useful to lower the worker counts to 1 to limit memory usage. You can use [this script](https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh) to do it. (Need to fix it for OSP14.
 
 - Lowering the memory usage on the controllers
 Just as before, in a lab/PoC environment, operators do not need all the workers configured.
