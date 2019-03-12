@@ -60,37 +60,79 @@ infrared virsh --host-address $YOURLABSERVER --host-key ~/.ssh/key_sbr_lab --cle
 We prepare the environment selecting what image to use, the cloud's topology and any further overrides.
 
 ```shell
-infrared virsh --host-address $YOURLABSERVER --host-key ~/.ssh/key_sbr_lab --topology-nodes undercloud:1,controller:3,compute:1 -e override.controller.cpu=6 -e override.controller.memory=12288 -e override.undercloud.disks.disk1.size=200G --image-url url_to_download_/7.5/.../rhel-guest-image....x86_64.qcow2
+infrared virsh --host-address $YOURLABSERVER \
+  --host-key ~/.ssh/key_sbr_lab \
+  --topology-nodes undercloud:1,controller:3,compute:1 \
+  -e override.controller.cpu=8 \
+  -e override.controller.memory=12288 \
+  -e override.undercloud.disks.disk1.size=200G \
+  --image-url url_to_download_/7.6/.../rhel-guest-image....x86_64.qcow2
 ```
 
 4. Install the undercloud
 
 You have to set the container registry namespace to the version required, as default has now changed to rhosp14
 ```shell
-infrared tripleo-undercloud --version 13 --registry-namespace rhosp13 --images-task=rpm --build ga
+infrared tripleo-undercloud --version 13 \
+  --registry-namespace rhosp13 \
+  --images-task=rpm \
+  --cdn ./examples/rh-subscription.yaml \
+  --ssl no \
+  --build ga
 ```
 
-Once this is deployed, depending on the size of you lab server (typical is 64Gb), I recommend to lower the worker counts to 1 to limit memory usage:
-https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh
+Once this is deployed, depending on the size of you lab server (typical is 64Gb), I recommend to lower the worker counts to 1 to limit memory usage. For the lazy, you can use [this script](https://github.com/mrVectorz/snips/blob/master/osp/low_memory_uc.sh)
 
 We can also set checkpoints at different deployment stages, so if any issues arise we can later save some time and revert.
+
+If you want to use custom repositories (but cannot overlap with ones already managed by rhn if already subscribed), you will then use the `--repos-config` parameter. An example of such a template is included here: "./examples/rh-registry.yaml"
+IR uses the yum_repository module, for more information see the [upstream documentation](https://docs.ansible.com/ansible/latest/modules/yum_repository_module.html). Do note that IR does not make use of all parameters for some reason.
 
 Backup the UC node :
 ```shell
 infrared tripleo-undercloud --snapshot-backup yes
 ```
 
+If we want to update and such the overcloud nodes, we will want them to be registered with the subscription manager. To do that we will add the following paramters (and template) for the IR command:
+```shell
+  --config-heat rhel_reg_activation_key=EXAMPLE_KEY \
+  --config-heat rhel_reg_org=EXAMPLE_ORG \
+  --overcloud-templates ./examples/oc_register.yaml
+```
+
 We start the overcloud deployment process with registering, introspecting and tagging the nodes :
 
 ```shell
-infrared tripleo-overcloud --deployment-files virt --version 13 --introspect yes --tagging yes --deploy no
+infrared tripleo-overcloud \
+  --deployment-files virt \
+  --version 13 \
+  --config-heat rhel_reg_activation_key=EXAMPLE_KEY \
+  --config-heat rhel_reg_org=EXAMPLE_ORG \
+  --overcloud-templates ./examples/oc-register.yaml \
+  --introspect yes \
+  --tagging yes \
+  --registry-skip-puddle yes \
+  --deploy no
 ```
 
 5. Deploying the overcloud
 Here we deploy the overcloud will all intended templates.
 
 ```shell
-infrared tripleo-overcloud --deployment-files virt --version 13 --introspect no --tagging no --deploy yes --containers yes
+infrared tripleo-overcloud \
+  --deployment-files virt \
+  --version 13 \
+  --config-heat rhel_reg_activation_key=EXAMPLE_KEY \
+  --config-heat rhel_reg_org=EXAMPLE_ORG \
+  --overcloud-templates ./examples/oc-register.yaml \
+  --registry-mirror registry.access.redhat.com/rhosp13 \
+  --registry-tag latest \
+  --registry-prefix=openstack- \
+  --introspect no \
+  --tagging no \
+  --deploy yes \
+  --registry-skip-puddle yes \
+  --containers yes
 ```
 
 Once done you can use the cloud-config plugin post creation to create networks and stuff (broken at times):

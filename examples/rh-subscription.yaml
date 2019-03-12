@@ -1,0 +1,5 @@
+# For RH employees: https://gitlab.cee.redhat.com/mmethot/randoms/blob/master/ir_templates/rh-subscription.yaml
+state: present
+autosubscribe: true
+activationkey: YOUR_ACTIVATION_KEY
+org_id: 0123456
