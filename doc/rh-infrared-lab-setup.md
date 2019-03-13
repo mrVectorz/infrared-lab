@@ -105,6 +105,9 @@ infrared tripleo-overcloud \
   --config-heat rhel_reg_activation_key=EXAMPLE_KEY \
   --config-heat rhel_reg_org=EXAMPLE_ORG \
   --overcloud-templates ./examples/oc-register.yaml \
+  --registry-mirror registry.access.redhat.com/rhosp13 \
+  --registry-tag latest \
+  --registry-prefix=openstack- \
   --introspect yes \
   --tagging yes \
   --registry-skip-puddle yes \
