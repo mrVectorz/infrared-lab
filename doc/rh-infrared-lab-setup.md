@@ -77,6 +77,7 @@ infrared tripleo-undercloud --version 13 \
   --registry-namespace rhosp13 \
   --images-task=rpm \
   --cdn ./examples/rh-subscription.yaml \
+  --registry-skip-puddle yes \
   --ssl no \
   --build ga
 ```
