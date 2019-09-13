@@ -10,18 +10,12 @@ sudo dnf install git gcc libffi-devel openssl-devel python-virtualenv libselinux
 Prepare a virtual environment for infrared :
 
 ```shell
-  virtualenv ~/.venv_infrared
-  source ~/.venv_infrared/bin/activate
-  pip install --upgrade pip
-  pip install --upgrade setuptools
-```
-
-Installing infrared :
-
-```shell
-  cd ~/.venv_infrared
   git clone https://github.com/redhat-openstack/infrared.git
   cd infrared
+  virtualenv .venv
+  source .venv/bin/activate
+  pip install --upgrade pip
+  pip install --upgrade setuptools
   pip install .
   echo ". $(pwd)/etc/bash_completion.d/infrared" >> ${VIRTUAL_ENV}/bin/activate
 ```
@@ -58,91 +52,35 @@ Cleanup the system :
 infrared virsh --host-address $YOURLABSERVER --host-key ~/.ssh/key_sbr_lab --cleanup true
 ```
 
-Setup networking :
-
-!! Need to configure bridges on the host first
-
-```shell
-cat << EOF > plugins/virsh/vars/topology/network/3_bridges_1_net.yml
-# br-ctlplane - provisioning
-# br-vlan - OSP internal services (internal/external/tenant)
-# br-link - dataplane networks
-networks:
-    net1:
-        name: br-ctlplane
-        forward: bridge
-        nic: enp22s0f4
-        ip_address: 10.10.179.86
-        netmask: 255.255.248.0
-    net2:
-        name: br-vlan
-        forward: bridge
-        nic: enp22s0f1
-    net3:
-        name: br-link
-        forward: bridge
-        nic: enp22s0f2
-    net4:
-        external_connectivity: yes
-        name: "management"
-        ip_address: "172.16.0.1"
-        netmask: "255.255.255.0"
-        forward: nat
-        dhcp:
-            range:
-                start: "172.16.0.2"
-                end: "172.16.0.100"
-            subnet_cidr: "172.16.0.0/24"
-            subnet_gateway: "172.16.0.1"
-        floating_ip:
-            start: "172.16.0.101"
-            end: "172.16.0.150"
-nodes:
-    undercloud:
-        interfaces:
-            - network: "br-ctlplane"
-              bridged: yes
-            - network: "management"
-        external_network:
-            network: "management"
-    controller:
-        interfaces:
-            - network: "br-ctlplane"
-              bridged: yes
-            - network: "br-vlan"
-              bridged: yes
-            - network: "br-link"
-              bridged: yes
-            - network: "management"
-        external_network:
-            network: "management"
-EOF
-```
+### Setup networking
 
 Provision the virtual nodes for the environment :
 
 ```shell
 infrared virsh -v \
-    --host-address $YOURLABSERVER \
-    --host-key ~/.ssh/key_sbr_lab \
-    --topology-network 3_bridges_1_net \
-    --topology-nodes undercloud:1,controller:1 \
-    -e override.undercloud.cpu=8 \
-    -e override.controller.cpu=8 \
-    -e override.undercloud.memory=28672 \
-    -e override.controller.memory=28672 \
-    -e override.undercloud.disks.disk1.size=150G \
-    --image-url url_to_download_/7.5/.../rhel-guest-image....x86_64.qcow2
+     --host-address $YOURLABSERVER \
+     --host-key ~/.ssh/gss-stack-tools \
+     --topology-network 4_nets_3_bridges_hybrid \
+     --topology-nodes undercloud:1,controller:3 \
+     -e override.networks.net1.nic=em4 \
+     -e override.networks.net2.nic=p2p1 \
+     -e override.networks.net1.nic=p2p2 \
+     -e override.undercloud.cpu=8 \
+     -e override.controller.cpu=8 \
+     -e override.undercloud.memory=28672 \
+     -e override.controller.memory=28672 \
+     -e override.undercloud.disks.disk1.size=150G \
+     --image-url http://...rhel-guest-image-7.7-166.x86_64.qcow2
 ```
 
 Install the undercloud :
 
 ```shell
 infrared tripleo-undercloud -v \
-    --version=10 \
-    --build=passed_phase1 \
+    --version=13 \
+    --build=passed_phase2 \
     --images-task=rpm \
-    --config-file undercloud_hybrid.conf
+    --ssl no
 ```
 
 Launch a partial deployment, it will only register, introspect and tag nodes :
