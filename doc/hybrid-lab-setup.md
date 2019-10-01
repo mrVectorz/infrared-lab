@@ -1,5 +1,5 @@
 # infrared virsh hybrid lab installation
-===============================
+---
 
 Deploying an Openstack Tripleo environment on a mix of physical and virtual servers.
 
