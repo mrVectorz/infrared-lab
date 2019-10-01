@@ -1,0 +1,46 @@
+resource_registry:
+  OS::TripleO::ComputeOvsDpdk::Net::SoftwareConfig: nic-configs/compute_ovs_dpdk.yaml
+  OS::TripleO::Controller::Net::SoftwareConfig: nic-configs/controller.yaml
+
+parameter_defaults:
+  # Set to the router gateway on the external network
+  ExternalInterfaceDefaultRoute: 172.16.0.1
+  # Gateway router for the provisioning network (or Undercloud IP)
+  ControlPlaneDefaultRoute: 192.168.24.1
+  # The IP address of the EC2 metadata server. Generally the IP of the Undercloud
+  EC2MetadataIp: 192.168.24.1
+
+  # ExternalNetworkVlanID: 105
+  ExternalAllocationPools: [{'start': '172.16.0.101', 'end': '172.16.0.150'}]
+  ExternalNetCidr: 172.16.0.0/24
+
+  InternalApiNetworkVlanID: 101
+  InternalApiNetCidr: 172.17.0.0/24
+  InternalApiAllocationPools: [{"start": "172.17.0.10", "end": "172.17.0.250"}]
+
+  TenantNetworkVlanID: 102
+  TenantNetCidr: 172.18.0.0/24
+  TenantAllocationPools: [{"start": "172.18.0.10", "end": "172.18.0.250"}]
+
+  StorageMgmtNetworkVlanID: 103
+  StorageMgmtNetCidr: 172.19.0.0/24
+  StorageMgmtAllocationPools: [{'start': '172.19.0.10', 'end': '172.19.0.200'}]
+
+  StorageNetworkVlanID: 104
+  StorageNetCidr: 172.20.0.0/24
+  StorageAllocationPools: [{'start': '172.20.0.10', 'end': '172.20.0.200'}]
+  
+  DnsServers: ["10.11.5.4","10.11.5.3"]
+  NtpServer: "10.5.26.10"
+  
+  # Set to "br-ex" if using floating IPs on native VLAN on bridge br-ex
+  NeutronExternalNetworkBridge: "''"
+  # The OVS logical->physical bridge mappings to use.
+  NeutronBridgeMappings: 'tenant:br-tenant,external:br-external'
+  # The Neutron ML2 and OpenVSwitch vlan mapping range to support.
+  NeutronNetworkVLANRanges: 'tenant:105:109' 
+  NeutronFlatNetworks: 'external'
+
+  NeutronEnableIsolatedMetadata: 'True'
+  NeutronTunnelTypes: 'vxlan'
+  NeutronNetworkType: 'vxlan'
