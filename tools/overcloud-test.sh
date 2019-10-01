@@ -72,6 +72,7 @@ fi
 if ! `openstack image list | grep -q cirros`;then
   c_version=$(curl -s http://download.cirros-cloud.net/ | awk '$0 ~ /<a href="[0-9|\.]*\// {text=gensub(/.*<a href="([0-9|\.]+\/).*$/, "\\1", "g", $0)}; END {print text}')
   curl http://download.cirros-cloud.net/${c_version}cirros-${c_version::(-1)}-x86_64-disk.img -o cirros-${c_version::(-1)}-x86_64-disk.img
+  openstack image create--file cirros-${c_version::(-1)}-x86_64-disk.img --container-format bare --disk-format qcow2 cirros
 fi
 
 # download centos
