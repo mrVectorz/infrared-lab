@@ -1,0 +1,33 @@
+heat_template_version: 2014-10-16
+
+resources:
+  userdata:
+    type: OS::Heat::MultipartMime
+    properties:
+      parts:
+      - config: {get_resource: swapon_config}
+
+  swapon_config:
+    type: OS::Heat::SoftwareConfig
+    properties:
+      config: |
+        #!/bin/bash -x
+        swap_device=$(sudo fdisk -l | grep swap | awk '{print $1}')
+        if [[ $swap_device && ${swap_device} ]]; then
+             rc_local="/etc/rc.d/rc.local"
+             echo "swapon $swap_device " >> $rc_local
+             chmod 755 $rc_local
+             swapon $swap_device
+        else
+          swap_device=/swap.file
+          rc_local="/etc/rc.d/rc.local"
+          dd if=/dev/zero of=$swap_device bs=1024 count=4194304
+          mkswap $swap_device
+          echo "swapon $swap_device " >> $rc_local
+          chmod 0600 $swap_device
+          chmod 755 $rc_local
+          swapon $swap_device
+        fi
+outputs:
+  OS::stack_id:
+    value: {get_resource: userdata}

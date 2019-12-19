@@ -1,0 +1,5 @@
+parameter_defaults:
+  OvercloudComputeOvsDpdkFlavor: compute
+  OvercloudControllerFlavor: controller
+  ComputeOvsDpdkCount: 3
+  ControllerCount: 3
