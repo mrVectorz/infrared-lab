@@ -74,7 +74,6 @@ Example of setting the above mentionned system variables:
   private_key=~/.ssh/key_sbr_lab
 ```
 
-<<<<<<< HEAD
 Then checkout this workspace :
 ```shell
 infrared workspace checkout $YOURLABSERVER
@@ -84,8 +83,7 @@ Cleanup the system :
 =======
 ### Creating the infrared workspace
 
-Create a workspace (if it does not exist yet) :
->>>>>>> 5552dc1f4700aa625841b079ec7cbb61a2163f35
+Create a workspace (if it does not exist yet), then checkout to make use of it :
 
 ```shell
   infrared workspace create $YOURLABSERVER
