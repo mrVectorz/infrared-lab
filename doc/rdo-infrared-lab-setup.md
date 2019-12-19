@@ -53,6 +53,11 @@ To create your workspace (if it does not exist yet) :
 infrared workspace create $YOURLABSERVER
 ```
 
+Then checkout this workspace :
+```shell
+infrared workspace checkout $YOURLABSERVER
+```
+
 2. Cleaning up the workspace
 Cleanup the system to assure that nothing remains from an old deployment :
 

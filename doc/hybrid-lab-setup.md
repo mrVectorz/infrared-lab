@@ -46,6 +46,11 @@ Create a workspace (if it does not exist yet) :
 infrared workspace create $YOURLABSERVER
 ```
 
+Then checkout this workspace :
+```shell
+infrared workspace checkout $YOURLABSERVER
+```
+
 Cleanup the system :
 
 ```shell
