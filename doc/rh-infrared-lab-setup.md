@@ -83,8 +83,7 @@ infrared tripleo-undercloud --version 13 \
   --images-task=rpm \
   --cdn ./examples/rh-subscription.yaml \
   --registry-skip-puddle yes \
-  --ssl no \
-  --build ga
+  --ssl no
 ```
 
 If you want to use custom repositories (but cannot overlap with ones already managed by rhn if already subscribed), you will then use the `--repos-config` parameter. An example of such a template is included here: "./examples/rh-registry.yaml"
@@ -108,8 +107,6 @@ We start the overcloud deployment process with registering, introspecting and ta
 infrared tripleo-overcloud \
   --deployment-files virt \
   --version 13 \
-  --config-heat rhel_reg_activation_key=EXAMPLE_KEY \
-  --config-heat rhel_reg_org=EXAMPLE_ORG \
   --overcloud-templates ./examples/oc-register.yaml \
   --registry-mirror registry.access.redhat.com/rhosp13 \
   --registry-tag latest \
@@ -127,8 +124,6 @@ Here we deploy the overcloud will all intended templates.
 infrared tripleo-overcloud \
   --deployment-files virt \
   --version 13 \
-  --config-heat rhel_reg_activation_key=EXAMPLE_KEY \
-  --config-heat rhel_reg_org=EXAMPLE_ORG \
   --overcloud-templates ./examples/oc-register.yaml \
   --registry-mirror registry.access.redhat.com/rhosp13 \
   --registry-tag latest \
@@ -136,8 +131,7 @@ infrared tripleo-overcloud \
   --introspect no \
   --tagging no \
   --deploy yes \
-  --registry-skip-puddle yes \
-  --containers yes
+  --registry-skip-puddle yes
 ```
 
 Once done you can use the cloud-config plugin post creation to create networks and stuff (broken at times):
