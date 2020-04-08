@@ -30,12 +30,12 @@ On your workstation where you will run infrared commands, install the following 
   sudo dnf install -y git gcc libffi-devel openssl-devel python-virtualenv libselinux-python redhat-rpm-config
 ```
 
-Prepare a python virtual environment for infrared :
+Prepare a python 2.7 virtual environment for infrared :
 
 ```shell
   git clone https://github.com/redhat-openstack/infrared.git
   cd infrared
-  virtualenv .venv
+  virtualenv -p /usr/bin/python2.7 .venv
   source .venv/bin/activate
   pip install --upgrade pip
   pip install --upgrade setuptools

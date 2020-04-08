@@ -10,7 +10,7 @@ Installing infrared :
 ```shell
   git clone https://github.com/redhat-openstack/infrared.git
   cd infrared
-  virtualenv .venv
+  virtualenv -p /usr/bin/python2.7 .venv
   source .venv/bin/activate
   pip install --upgrade pip
   pip install --upgrade setuptools
